@@ -72,13 +72,8 @@
                                                 {{-- <input type="text" class="form-control" name="currency" id="currency" placeholder="Currency" required> --}}
                                               </div>
                                           </div>
-                                          <div class="form-group row mt-3">
-                                              <label for="approver" class="col-sm-3 col-form-label text-end">Approver <span class="text-danger">*</span></label>
-                                              <div class="col-sm-9">
-                                                  <input type="text" class="form-control" name="approver" id="approver" placeholder="Approver" required>
-                                              </div>
-                                          </div>
-                                          <div class="form-group row mt-3">
+                                          
+                                          {{-- <div class="form-group row mt-3">
                                               <label for="status" class="col-sm-3 col-form-label text-end">Status <span class="text-danger">*</span></label>
                                               <div class="col-sm-9">
                                                   <select class="form-control" name="status" id="status" required>
@@ -86,7 +81,7 @@
                                                       <option value="inactive">Inactive</option>
                                                   </select>
                                               </div>
-                                          </div>
+                                          </div> --}}
                                           <div class="form-group row mt-3">
                                               <label for="LC_no" class="col-sm-3 col-form-label text-end">LC No</label>
                                               <div class="col-sm-9">
@@ -104,6 +99,15 @@
 
                                       <div class="col-md-6">
 
+                                        
+
+
+                                            <div class="form-group row mt-3">
+                                                <label for="approver" class="col-sm-3 col-form-label text-end">Approver <span class="text-danger">*</span></label>
+                                                <div class="col-sm-9">
+                                                    <input type="text" class="form-control" name="approver" id="approver" placeholder="Approver" required>
+                                                </div>
+                                            </div>
                                           <div class="form-group row mt-3">
                                             <label for="workshop_id" class="col-sm-3 col-form-label text-end">Workshop Name <span class="text-danger">*</span></label>
                                             <div class="col-sm-9">
@@ -128,30 +132,24 @@
                                                 {{-- <input type="number" class="form-control" name="supplier_id" id="supplier_id" placeholder="Supplier ID" required> --}}
                                               </div>
                                           </div>
-                                          <div class="form-group row mt-3">
+                                          {{-- <div class="form-group row mt-3">
                                               <label for="company_id" class="col-sm-3 col-form-label text-end">Company Name <span class="text-danger">*</span></label>
                                               <div class="col-sm-9">
-                                                <select class="form-select" name="company_id" id="company_id" required>
-                                                    <option selected disabled value="">Company Name</option>
-                                                    @foreach ($companyName as $item)
-                                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                                    @endforeach
-                                                </select>   
-                                                {{-- <input type="number" class="form-control" name="company_id" id="company_id" placeholder="Company ID" required> --}}
+                                                <input type="text" class="form-control" name="company_name" id="company_name" value="{{ Auth::user()->company_name }}" readonly>
                                               </div>
                                           </div>
                                           <div class="form-group row mt-3">
-                                              <label for="user_id" class="col-sm-3 col-form-label text-end">User ID</label>
+                                              <label for="user_id" class="col-sm-3 col-form-label text-end">User Name</label>
                                               <div class="col-sm-9">
-                                                  <input type="number" placeholder="User ID" class="form-control" name="user_id" id="user_id" value="{{ Auth::user()->id }}" readonly>
+                                                  <input type="text" class="form-control" name="user_name" id="user_name" value="{{ Auth::user()->name }}" readonly>
                                               </div>
                                           </div>
                                           <div class="form-group row mt-3">
                                               <label for="updated_by" class="col-sm-3 col-form-label text-end">Updated By</label>
                                               <div class="col-sm-9">
-                                                  <input type="text" placeholder="Updated By" class="form-control" name="updated_by" id="updated_by">
-                                              </div>
-                                          </div>
+                                                <input type="text" class="form-control" name="user_name" id="user_name" value="{{ Auth::user()->name }}" readonly>
+                                            </div>
+                                          </div> --}}
                                       </div>
                                   </div>
                                 </div>

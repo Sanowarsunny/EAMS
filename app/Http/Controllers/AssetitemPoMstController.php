@@ -30,11 +30,13 @@ class AssetitemPoMstController extends Controller
         $roleaccess     =Objecttorole::with('user','manageobject')
         ->where('rollmanage_id','=', $userrole)->get();
 
+       
+
         //data collect from table
         $currencies = Currency::orderBy('id', 'desc')->get();
         $workShopName = Workshop::orderBy('id', 'desc')->get();
         $suppilerName = Supplier::orderBy('id', 'desc')->get();
-        $companyName = Company::orderBy('id', 'desc')->get();
+        // $companyName = Company::orderBy('id', 'desc')->get();
 
 
          $categoryName = Categorymodel::orderBy('id', 'desc')->get();
@@ -43,7 +45,7 @@ class AssetitemPoMstController extends Controller
 
         //$assetitemPoDtls = Assetitem_po_dtl::with(['categoryModel', 'brand'])->get();
 
-        return view("pages.AssetPurchasePages.asset-purchase-create", compact('access', 'roleaccess','currencies','companyName', 'suppilerName','workShopName','categoryName','brandName','uoms'));
+        return view("pages.AssetPurchasePages.asset-purchase-create", compact('access','roleaccess','currencies', 'suppilerName','workShopName','categoryName','brandName','uoms'));
        
         
     }
@@ -89,14 +91,14 @@ class AssetitemPoMstController extends Controller
             'po_gen_id' => 'required|string|max:255',
             'currency' => 'required|exists:currencies,id',
             'approver' => 'required|string|max:255',
-            'status' => 'required|string|max:255',
+            //'status' => 'nullable|string|max:255',
             'LC_no' => 'nullable|string|max:255',
             'LC_date' => 'nullable|date',
             'workshop_id' => 'required|exists:workshops,id',
             'supplier_id' => 'required|exists:suppliers,id',
-            'company_id' => 'required|exists:companies,id',
-            'user_id' => 'required|exists:users,id',
-            'updated_by' => 'nullable|string|max:255',
+            //'company_id' => 'required|exists:companies,id',
+            //'user_id' => 'required|exists:users,id',
+            //'updated_by' => 'nullable|string|max:255',
             'categorymodel_id.*' => 'required|exists:categorymodels,id',
             'unit_price.*' => 'required|numeric',
             'quantity.*' => 'required|numeric',
@@ -104,8 +106,12 @@ class AssetitemPoMstController extends Controller
             'uom_id.*' => 'required|exists:uoms,id',
         ]);
 
-        // Override user_id with the authenticated user's ID
+        //  user_id with the authenticated user's ID
         $validatedData['user_id'] = Auth::id();
+        $validatedData['company_id'] = Auth::user()->company_id;
+        $validatedData['status'] = 'Pending';
+        $validatedData['updated_by'] = Auth::user()->name;
+
 
         // Create a new Assetitem_po_mst
         $assetPurchaseOrder_mst = Assetitem_po_mst::create($validatedData);
@@ -123,7 +129,7 @@ class AssetitemPoMstController extends Controller
                     'total_amount' => $request->input('total_amount')[$key],
                     'uom_id' => $request->input('uom_id')[$key],
                     'user_id' => Auth::id(),
-                    'updated_by' => $request->input('updated_by'),
+                    'updated_by' => Auth::user()->name,
                 ];
             }
 
