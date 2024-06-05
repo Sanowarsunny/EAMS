@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AssetitemPoMstController extends Controller
 {
+    
     function assetPurchaseOrderView(Request $request){
        
         
@@ -30,7 +31,9 @@ class AssetitemPoMstController extends Controller
         $roleaccess     =Objecttorole::with('user','manageobject')
         ->where('rollmanage_id','=', $userrole)->get();
 
-       
+        $purchaseOrders = Assetitem_po_mst::with(['workshop', 'supplier', 'user', 'details'])
+        ->orderBy('created_at', 'desc')
+        ->get();
 
         //data collect from table
         $currencies = Currency::orderBy('id', 'desc')->get();
@@ -45,45 +48,31 @@ class AssetitemPoMstController extends Controller
 
         //$assetitemPoDtls = Assetitem_po_dtl::with(['categoryModel', 'brand'])->get();
 
-        return view("pages.AssetPurchasePages.asset-purchase-create", compact('access','roleaccess','currencies', 'suppilerName','workShopName','categoryName','brandName','uoms'));
+        return view("pages.AssetPurchasePages.asset-purchase-create", compact('access','roleaccess','currencies', 'suppilerName','workShopName','categoryName','brandName','uoms','purchaseOrders'));
        
         
     }
 
-    // public function assetPurchaseOrderStore(Request $request)
-    // {
-    
-    //      // Validate the request data
-    //      $validatedData = $request->validate([
-    //         'po_gen_id' => 'required|string|max:255',
-    //         'currency' => 'nullable|string|max:255',
-    //         'approver' => 'nullable|string|max:255',
-    //         'status' => 'nullable|string|max:255',
-    //         'LC_no' => 'nullable|string|max:255',
-    //         'LC_date' => 'nullable|date',
-    //         'workshop_id' => 'required|exists:workshops,id',
-    //         'supplier_id' => 'required|exists:suppliers,id',
-    //         'company_id' => 'required|exists:companies,id',
-    //         'user_id' => 'required|exists:users,id',
-    //         'updated_by' => 'nullable|string|max:255',
-    //     ]);
 
-    //     $validatedData['user_id'] = Auth::id();
+    function assetPurchaseOrderList(Request $request){
+       
+        $purchaseOrders = Assetitem_po_mst::with(['workshop', 'supplier', 'user', 'details'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+        
+        $login          =Auth::user()->id; 
+        $access         =Objectaccess::with('user','manageobject')
+        ->where('user_id','=', $login)
+        ->orderBy('user_id', 'asc')->get();
 
-    //     // Create a new Assetitem_po_mst
-    //     $assetPurchaseOrder_mst = Assetitem_po_mst::create($validatedData);
+        $userrole       =Auth::user()->rollmanage_id;
+        $roleaccess     =Objecttorole::with('user','manageobject')
+        ->where('rollmanage_id','=', $userrole)->get();
 
-    //     if($assetPurchaseOrder_mst)
-    //     {
-    //         return redirect()->route('assetPurchaseOrder-view')->with('message','Asset Purchase Order added Successfully');
-
-    //     }else
-    //     {
-    //         return redirect()->back();
-    //     }
-    // }
-
-
+        return view("pages.AssetPurchasePages.asset-purchase-list",compact('purchaseOrders','access','roleaccess'));
+        
+        
+    }
     public function assetPurchaseOrderStore(Request $request)
     {
         // Validate the request data
@@ -109,7 +98,7 @@ class AssetitemPoMstController extends Controller
         //  user_id with the authenticated user's ID
         $validatedData['user_id'] = Auth::id();
         $validatedData['company_id'] = Auth::user()->company_id;
-        $validatedData['status'] = 'Pending';
+        $validatedData['status'] = 'pending';
         $validatedData['updated_by'] = Auth::user()->name;
 
 
@@ -141,4 +130,29 @@ class AssetitemPoMstController extends Controller
             return redirect()->back()->with('error', 'Failed to add Asset Purchase Order');
         }
     }
+
+    public function assetPurchaseOrderEdit($id)
+    {
+
+        $login          =Auth::user()->id; 
+        $access         =Objectaccess::with('user','manageobject')
+        ->where('user_id','=', $login)
+        ->orderBy('user_id', 'asc')->get();
+
+        $userrole       =Auth::user()->rollmanage_id;
+        $roleaccess     =Objecttorole::with('user','manageobject')
+        ->where('rollmanage_id','=', $userrole)->get();
+
+
+        $purchaseOrder = Assetitem_po_mst::findOrFail($id);
+        $currencies = Currency::orderBy('id', 'desc')->get();
+        $workShopName = Workshop::orderBy('id', 'desc')->get();
+        $suppilerName = Supplier::orderBy('id', 'desc')->get();
+        $categoryName = Categorymodel::orderBy('id', 'desc')->get();
+        $brandName = Brand::orderBy('id', 'desc')->get();
+        $uoms = Uom::orderBy('id', 'asc')->get();
+
+        return view("pages.AssetPurchasePages.asset-purchase-edit", compact('access','roleaccess','purchaseOrder', 'currencies', 'workShopName', 'suppilerName', 'categoryName', 'brandName', 'uoms'));
+    }
+
 }

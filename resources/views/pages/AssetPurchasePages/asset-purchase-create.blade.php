@@ -235,6 +235,66 @@
                 </div>
             </div>
         </section>
+
+
+        {{-- List Section --}}
+
+        <section class="section">
+            <div class="row">
+                <div class="col-lg-12">
+                  <div class="card c-shadow">
+                    <div class="card-body">
+                      <h5 class="card-title">Asset Purchase Order List</h5>
+        
+                      <!-- Table with stripped rows -->
+                      <table id="datatable" class="table table-striped table-bordered datatable">
+                        <thead>
+                          <tr class="text-center bg-dark text-light">
+        
+                            {{-- <th scope="col">Sl#</th>
+                            <th scope="col">id</th> --}}
+                            <th scope="col">Serial No</th>
+                            <th scope="col">Po Gen ID</th>
+                            <th scope="col">Approver Name</th>
+                            <th scope="col">WorkShop Name</th>
+                            <th scope="col">Suppiler Name</th>
+                            <th scope="col">Total Item</th>
+                            <th scope="col">Total Amount</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Creator</th>
+                           
+                            <th scope="col">Actions</th>
+        
+                          </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($purchaseOrders as $purchaseOrder)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $purchaseOrder->po_gen_id }}</td>
+                                    <td>{{ $purchaseOrder->approver }}</td>
+                                    <td>{{ $purchaseOrder->workshop->name }}</td>
+                                    <td>{{ $purchaseOrder->supplier->name }}</td>
+                                    <td>{{ $purchaseOrder->details->count() }}</td>
+                                    <td>{{ $purchaseOrder->details->sum('total_amount') }}</td>
+                                    <td>{{ ucfirst($purchaseOrder->status) }}</td>
+                                    <td>{{ $purchaseOrder->user->name }}</td>
+                                    <td class="text-center">
+                                        @if(in_array($purchaseOrder->status, ['pending', 'inactive']))
+                                            <a href="{{ route('assetPurchaseOrder-edit', $purchaseOrder->id) }}" class="btn btn-primary btn-sm">Edit</a>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                      </table>
+                      <!-- End Table with stripped rows -->
+                      <div class="pages">
+                      </div>
+                    </div>
+              </div>
+            </div>
+        </section>
     </main>
 
     <script>

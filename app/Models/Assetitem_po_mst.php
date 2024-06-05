@@ -53,5 +53,10 @@ class Assetitem_po_mst extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function details()
+    {
+        return $this->hasMany(Assetitem_po_dtl::class);
+    }
+
 }
 

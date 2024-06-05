@@ -191,8 +191,8 @@ Route::middleware('auth')->group(function () {
     
     Route::get("/asset_purchase_order_view",[AssetitemPoMstController::class,'assetPurchaseOrderView'])->name('assetPurchaseOrder-view');
     Route::post('/asset-purchase-order-store',[AssetitemPoMstController::class,'assetPurchaseOrderStore'])->name('assetPurchaseOrdermst-store');
-    // Route::get("/supplier-list",[AssetitemPoMstController::class,'supplierList'])->name('supplier-list');
-    // Route::get('/supplier-edit/{id}',[AssetitemPoMstController::class,'supplierEdit'])->name('supplier-edit');
+    Route::get("/asset_purchase_order_list",[AssetitemPoMstController::class,'assetPurchaseOrderList'])->name('assetPurchaseOrder-list');
+    Route::get('/asset_purchase_order_edit/{id}',[AssetitemPoMstController::class,'assetPurchaseOrderEdit'])->name('assetPurchaseOrder-edit');
     // Route::post('/supplier-update',[AssetitemPoMstController::class,'supplierUpate'])->name('supplier-update');
     // Route::get('supplier-delete/{id}',[AssetitemPoMstController::class,'supplierDelete']);
 
