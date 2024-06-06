@@ -192,9 +192,9 @@ Route::middleware('auth')->group(function () {
     Route::get("/asset_purchase_order_view",[AssetitemPoMstController::class,'assetPurchaseOrderView'])->name('assetPurchaseOrder-view');
     Route::post('/asset-purchase-order-store',[AssetitemPoMstController::class,'assetPurchaseOrderStore'])->name('assetPurchaseOrdermst-store');
     Route::get("/asset_purchase_order_list",[AssetitemPoMstController::class,'assetPurchaseOrderList'])->name('assetPurchaseOrder-list');
-    Route::get('/asset_purchase_order_edit/{id}',[AssetitemPoMstController::class,'assetPurchaseOrderEdit'])->name('assetPurchaseOrder-edit');
-    // Route::post('/supplier-update',[AssetitemPoMstController::class,'supplierUpate'])->name('supplier-update');
-    // Route::get('supplier-delete/{id}',[AssetitemPoMstController::class,'supplierDelete']);
+    Route::get('/assetPurchaseOrder_{id}_edit',[AssetitemPoMstController::class,'assetPurchaseOrderEdit'])->name('assetPurchaseOrder-edit');
+    Route::post('/asset_purchase_order_update/{id}', [AssetitemPoMstController::class, 'assetPurchaseOrderUpdate'])->name('assetPurchaseOrder-update');
+    Route::delete('/assetPurchaseOrder_{id}_destroy', [AssetitemPoMstController::class, 'assetPurchaseOrderDestroy'])->name('assetPurchaseOrder-destroy');
 
 
     //MeterReading

@@ -1,18 +1,25 @@
 <!-- ======= Head ======= -->
 @include('admin.inc.head')
 <!-- ======= Head ======= -->
+
+<!-- ======= Header ======= -->
+@include('admin.inc.header')
+<!-- End Header -->
+
+<!-- ======= Sidebar ======= -->
+@include('admin.inc.sidebar')
+<!-- End Sidebar-->
 <body>
-    <!-- ======= Header ======= -->
-    @include('admin.inc.header')
-    <!-- End Header -->
-
-    <!-- ======= Sidebar ======= -->
-    @include('admin.inc.sidebar')
-    <!-- End Sidebar-->
-
+    
     <main id="main" class="main">
         <div class="pagetitle">
             <h1>Edit Asset Purchase Order</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item active">Asset Purchase Order Edit</li>
+                </ol>
+            </nav>
             <!-- Add breadcrumb navigation if needed -->
         </div>
         <!-- End Page Title -->
@@ -42,7 +49,7 @@
                             </div>
                             @endif
 
-                            <form action="" method="post" class="needs-validation" novalidate>
+                            <form action="{{ route('assetPurchaseOrder-update',$purchaseOrder->id) }}" method="post" class="needs-validation" novalidate>
                                 @csrf
                                 <!-- Purchase Order Master Fields -->
                                 <div class="card p-3" style="border: 1px solid black; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);">
@@ -93,6 +100,22 @@
                                                     <input type="text" class="form-control" name="approver" id="approver" placeholder="Approver" required value="{{ $purchaseOrder->approver }}">
                                                 </div>
                                             </div>
+                                           
+                                            <div class="form-group row mt-3">
+                                                <label for="status" class="col-sm-3 col-form-label text-end">Status <span class="text-danger">*</span></label>
+                                                <div class="col-sm-9">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" type="checkbox" id="statusActive" name="status" value="active" {{ $purchaseOrder->status == 'active' ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="statusActive">Active</label>
+                                                    </div>
+                                                    <div class="form-check form-switch mt-2">
+                                                        <input class="form-check-input" type="checkbox" id="statusInactive" name="status" value="inactive" {{ $purchaseOrder->status == 'inactive' ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="statusInactive">Inactive</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            
                                           <div class="form-group row mt-3">
                                             <label for="workshop_id" class="col-sm-3 col-form-label text-end">Workshop Name <span class="text-danger">*</span></label>
                                             <div class="col-sm-9">
@@ -199,7 +222,86 @@
                 </div>
             </div>
         </section>
+        <!-- bootstrap5 dataTables js cdn -->
+        <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap5.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+        <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+        
+        <script>
+            $(document).ready(function () {
+
+                $('#datatable').DataTable();
+
+                // Get references to the checkboxes
+                const statusActive = document.getElementById('statusActive');
+                const statusInactive = document.getElementById('statusInactive');
+
+                // Add event listeners to the checkboxes
+                statusActive.addEventListener('change', function() {
+                    // If Active checkbox is checked, uncheck the Inactive checkbox
+                    if (statusActive.checked) {
+                        statusInactive.checked = false;
+                    }
+                });
+
+                statusInactive.addEventListener('change', function() {
+                    // If Inactive checkbox is checked, uncheck the Active checkbox
+                    if (statusInactive.checked) {
+                        statusActive.checked = false;
+                    }
+                });
+
+                $('#addRow').click(function () {
+                const detailRows = $('#detailRows');
+                const newRow = detailRows.children('tr').first().clone();
+                newRow.find('input, select').val('');
+                detailRows.append(newRow);
+
+                updateGrandTotal();
+            });
+
+            // Remove row functionality
+            $(document).on('click', '.removeRow', function () {
+                $(this).closest('tr').remove();
+                updateGrandTotal();
+            });
+
+            // Update the grand total
+            function updateGrandTotal() {
+                let grandTotal = 0;
+
+                $('#detailRows tr').each(function () {
+                    const unitPrice = parseFloat($(this).find('[name="unit_price[]"]').val());
+                    const quantity = parseFloat($(this).find('[name="quantity[]"]').val());
+                    if (!isNaN(unitPrice) && !isNaN(quantity)) {
+                        const totalAmount = unitPrice * quantity;
+                        $(this).find('[name="total_amount[]"]').val(totalAmount);
+                        grandTotal += totalAmount;
+                    }
+                });
+
+                $('#grandTotal').val(grandTotal.toFixed(2));
+            }
+
+            // Update total on input change
+            $(document).on('input', '[name="unit_price[]"], [name="quantity[]"]', function () {
+                updateGrandTotal();
+            });
+
+            // Initial update
+            updateGrandTotal();
+            });
+        </script>
 
     </main>
+    <!-- End #main -->
 
-</body>
+    <!-- ======= Footer ======= -->
+    @include('admin.inc.footer')
+    <!-- End Footer -->
+
+    </body>
+  <!-- Template Main JS File -->
+  <script src="{{ asset("admin/assets/js/main.js")}}"></script>
+</html>
+   

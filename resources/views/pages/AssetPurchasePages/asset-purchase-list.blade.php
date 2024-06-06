@@ -66,7 +66,7 @@
                             <td class="text-center">
                                 <!-- Add your action buttons here -->
                                 <a href="{{ route('assetPurchaseOrder-edit', $purchaseOrder->id) }}" class="btn btn-primary btn-sm">Edit</a>
-                                <form action="" method="POST" style="display:inline;">
+                                <form action="{{ route('assetPurchaseOrder-destroy', $purchaseOrder->id) }}" method="POST" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger btn-sm">Delete</button>

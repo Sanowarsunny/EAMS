@@ -155,4 +155,72 @@ class AssetitemPoMstController extends Controller
         return view("pages.AssetPurchasePages.asset-purchase-edit", compact('access','roleaccess','purchaseOrder', 'currencies', 'workShopName', 'suppilerName', 'categoryName', 'brandName', 'uoms'));
     }
 
+    public function assetPurchaseOrderUpdate(Request $request, $id)
+    {
+        // Validate the request data
+        $validatedData = $request->validate([
+            'po_gen_id' => 'required|string|max:255',
+            'currency' => 'required|exists:currencies,id',
+            'approver' => 'required|string|max:255',
+            'status' => 'required|string|max:255',
+            'LC_no' => 'nullable|string|max:255',
+            'LC_date' => 'nullable|date',
+            'workshop_id' => 'required|exists:workshops,id',
+            'supplier_id' => 'required|exists:suppliers,id',
+            //'company_id' => 'required|exists:companies,id',
+            //'user_id' => 'required|exists:users,id',
+            //'updated_by' => 'nullable|string|max:255',
+            'categorymodel_id.*' => 'required|exists:categorymodels,id',
+            'unit_price.*' => 'required|numeric',
+            'quantity.*' => 'required|numeric',
+            'total_amount.*' => 'nullable|numeric',
+            'uom_id.*' => 'required|exists:uoms,id',
+        ]);
+
+        // Get the Assetitem_po_mst record to update
+        $assetPurchaseOrder_mst = Assetitem_po_mst::findOrFail($id);
+
+        // Update the Assetitem_po_mst record with validated data
+        $assetPurchaseOrder_mst->update($validatedData);
+
+        if ($assetPurchaseOrder_mst) {
+            // Delete existing detail records
+            $assetPurchaseOrder_mst->details()->delete();
+
+            // Extract detail data from request and create new detail records
+            $detailData = [];
+            foreach ($request->input('categorymodel_id') as $key => $value) {
+                $detailData[] = [
+                    'assetitem_po_mst_id' => $assetPurchaseOrder_mst->id,
+                    'categorymodel_id' => $request->input('categorymodel_id')[$key],
+                    'brand_id' => $request->input('brand_id')[$key],
+                    'unit_price' => $request->input('unit_price')[$key],
+                    'quantity' => $request->input('quantity')[$key],
+                    'total_amount' => $request->input('total_amount')[$key],
+                    'uom_id' => $request->input('uom_id')[$key],
+                    'user_id' => Auth::id(),
+                    'updated_by' => Auth::user()->name,
+                ];
+            }
+
+            // Create new detail records
+            Assetitem_po_dtl::insert($detailData);
+
+            return redirect()->route('assetPurchaseOrder-list')->with('message', 'Asset Purchase Order updated successfully');
+        } else {
+            return redirect()->back()->with('error', 'Failed to update Asset Purchase Order');
+        }
+    }
+
+    public function assetPurchaseOrderDestroy($id)
+    {
+        // Find the purchase order by ID
+        $purchaseOrder = Assetitem_po_mst::findOrFail($id);
+
+        // Delete the purchase order
+        $purchaseOrder->delete();
+
+        // Redirect back to the previous page
+        return redirect()->back()->with('message', 'Asset Purchase Order deleted successfully.');
+    }
 }
