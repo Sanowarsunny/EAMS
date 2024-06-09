@@ -33,49 +33,47 @@
                 <!-- Table with stripped rows -->
                 <table id="datatable" class="table table-striped table-bordered datatable">
                   <thead>
-                    <tr class="text-center bg-dark text-light">
-  
-                      {{-- <th scope="col">Sl#</th>
-                      <th scope="col">id</th> --}}
-                      <th scope="col">Serial No</th>
-                      <th scope="col">Po Gen ID</th>
-                      <th scope="col">Approver Name</th>
-                      <th scope="col">WorkShop Name</th>
-                      <th scope="col">Suppiler Name</th>
-                      <th scope="col">Total Item</th>
-                      <th scope="col">Total Amount</th>
-                      <th scope="col">Status</th>
-                      <th scope="col">Creator</th>
-                     
-                      <th scope="col">Actions</th>
-  
-                    </tr>
+                      <tr class="text-center bg-dark text-light">
+                          <th scope="col">Serial No</th>
+                          <th scope="col">Po Gen ID</th>
+                          <th scope="col">Approver Name</th>
+                          <th scope="col">WorkShop Name</th>
+                          <th scope="col">Supplier Name</th>
+                          <th scope="col">Total Item</th>
+                          <th scope="col">Total Amount</th>
+                          <th scope="col">Status</th>
+                          <th scope="col">Creator</th>
+                          <th scope="col">Actions</th>
+                      </tr>
                   </thead>
                   <tbody>
-                    @foreach($purchaseOrders as $purchaseOrder)
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $purchaseOrder->po_gen_id }}</td>
-                            <td>{{ $purchaseOrder->approver }}</td>
-                            <td>{{ $purchaseOrder->workshop->name }}</td>
-                            <td>{{ $purchaseOrder->supplier->name }}</td>
-                            <td>{{ $purchaseOrder->details->count() }}</td>
-                            <td>{{ $purchaseOrder->details->sum('total_amount') }}</td>
-                            <td>{{ ucfirst($purchaseOrder->status) }}</td>
-                            <td>{{ $purchaseOrder->user->name }}</td>
-                            <td class="text-center">
-                                <!-- Add your action buttons here -->
-                                <a href="{{ route('assetPurchaseOrder-edit', $purchaseOrder->id) }}" class="btn btn-primary btn-sm">Edit</a>
-                                <form action="{{ route('assetPurchaseOrder-destroy', $purchaseOrder->id) }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                </form>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
+                      @foreach($purchaseOrders as $purchaseOrder)
+                          <tr>
+                              <td>{{ $loop->iteration }}</td>
+                              <td>{{ $purchaseOrder->po_gen_id }}</td>
+                              <td>{{ $purchaseOrder->approver }}</td>
+                              <td>{{ $purchaseOrder->workshop->name }}</td>
+                              <td>{{ $purchaseOrder->supplier->name }}</td>
+                              <td>{{ $purchaseOrder->details->count() }}</td>
+                              <td>{{ $purchaseOrder->details->sum('total_amount') }}</td>
+                              <td>{{ ucfirst($purchaseOrder->status) }}</td>
+                              <td>{{ $purchaseOrder->user->name }}</td>
+                              <td class="text-center">
+                                  <div class="d-flex justify-content-center">
+                                      <a href="{{ route('assetPurchaseOrder-report', $purchaseOrder->id) }}" class="btn btn-primary btn-sm mx-2">Report</a>
+                                      <a href="{{ route('assetPurchaseOrder-edit', $purchaseOrder->id) }}" class="btn btn-primary btn-sm mx-2">Edit</a>
+                                      <form action="{{ route('assetPurchaseOrder-destroy', $purchaseOrder->id) }}" method="POST" style="display:inline;">
+                                          @csrf
+                                          @method('DELETE')
+                                          <button type="submit" class="btn btn-danger btn-sm mx-2">Delete</button>
+                                      </form>
+                                  </div>
+                              </td>
+                          </tr>
+                      @endforeach
+                  </tbody>
                 </table>
+              
                 <!-- End Table with stripped rows -->
                 <div class="pages">
                 </div>

@@ -195,6 +195,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/assetPurchaseOrder_{id}_edit',[AssetitemPoMstController::class,'assetPurchaseOrderEdit'])->name('assetPurchaseOrder-edit');
     Route::post('/asset_purchase_order_update/{id}', [AssetitemPoMstController::class, 'assetPurchaseOrderUpdate'])->name('assetPurchaseOrder-update');
     Route::delete('/assetPurchaseOrder_{id}_destroy', [AssetitemPoMstController::class, 'assetPurchaseOrderDestroy'])->name('assetPurchaseOrder-destroy');
+    Route::get('/asset-purchase-order-report/{id}', [AssetitemPoMstController::class, 'assetPurchaseOrderReport'])->name('assetPurchaseOrder-report');
 
 
     //MeterReading

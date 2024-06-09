@@ -15,6 +15,7 @@ use App\Models\Uom;
 use App\Models\Workshop;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class AssetitemPoMstController extends Controller
 {
@@ -223,4 +224,32 @@ class AssetitemPoMstController extends Controller
         // Redirect back to the previous page
         return redirect()->back()->with('message', 'Asset Purchase Order deleted successfully.');
     }
+
+    public function assetPurchaseOrderReport($id)
+    {
+        $userrole       =Auth::user()->rollmanage_id;
+        $roleaccess     =Objecttorole::with('user','manageobject')
+        ->where('rollmanage_id','=', $userrole)->get();
+
+
+        $purchaseOrder = Assetitem_po_mst::with('details', 'workshop', 'supplier', 'company', 'user')->findOrFail($id);
+
+        $company = Company::find(Auth::user()->company_id);
+        $user = Auth::user();
+
+        $data = [
+            'purchaseOrder' => $purchaseOrder,
+            'companyName' => $company->name,
+            'companyAddress' => $company->address,
+            'reportTitle' => 'Asset Purchase Order Report',
+            'purpose' => 'The purpose of this report is to provide details about the asset purchase order.',
+            'printDate' => now()->format('d-m-Y'),
+            'preparedBy' => $user->name,
+        ];
+
+        $pdf = PDF::loadView('pages.AssetPurchasePages.asset_purchase_order_report', $data);
+        return $pdf->download('asset_purchase_order_report.pdf');
+
+    }
+
 }
